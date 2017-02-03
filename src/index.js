@@ -16,19 +16,28 @@ class App extends Component {
     this.state = {
       videos: [],
       selectedVideo: null
-     };
-
-    YTSearch({key: API_KEY, term: 'chicken curry'}, (videos) => {
-      this.setState({ videos });
-      // this.setState({ videos: videos }); only works when k,v are of the same name
-    })
+    };
+    this.videoSearch('chicken curry');
   }
+
+  videoSearch(term) {
+    YTSearch({key: API_KEY, term: term}, (videos) => {
+      this.setState({
+        videos: videos,
+        selectedVideo: videos[0]
+      });
+      // this.setState({ videos: videos }); only works when k,v are of the same name
+    });
+  }
+
   render() {
     return (
       <div>
-        <SearchBar />
+        <SearchBar onSearchTermChange={term => this.videoSearch(term)}/>
         <VideoDetail video={this.state.selectedVideo}/>
-        <VideoList videos={this.state.videos} />
+        <VideoList
+          onVideoSelect={ selectedVideo => this.setState({selectedVideo}) }
+          videos={this.state.videos} />
       </div>
     );
   }
